@@ -11,6 +11,8 @@ namespace MonoGame_WaTor
 {
     public class WaTorGame : Game
     {
+        public static Random R = new();
+
         private GraphicsDeviceManager graphics;
         private SpriteBatch spriteBatch;
 
@@ -24,7 +26,7 @@ namespace MonoGame_WaTor
         public WaTorGame()
         {
             graphics = new GraphicsDeviceManager(this);
-            TargetElapsedTime = TimeSpan.FromMilliseconds(1000 / 5f); // Run game at 5fps (200ms intervals)
+            TargetElapsedTime = TimeSpan.FromMilliseconds(1000 / 2f); // Run game at 5fps (200ms intervals)
             Content.RootDirectory = "Content";
             IsMouseVisible = true;
         }
@@ -58,10 +60,10 @@ namespace MonoGame_WaTor
             Shark.UnloadStaticContent();
         }
 
-        // 5 fps
+        int updateCt = 0;
         protected override void Update(GameTime gameTime)
         {
-            Debug.WriteLine($"Is update running behind? {gameTime.IsRunningSlowly}");
+            Debug.WriteLine($"Is update running behind? {gameTime.IsRunningSlowly} {++updateCt}");
 
             if (Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
