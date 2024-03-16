@@ -52,7 +52,9 @@ namespace MonoGame_WaTor.GameObjects
                 Point2D movingTo = nearby[WaTorGame.R.Next(nearby.Count)];
                 if (reproducing)
                 {
-                    new Fish(Game, movingTo.X, movingTo.Y);
+                    Fish child = new Fish(Game, movingTo.X, movingTo.Y);
+                    child.AddToWorld(updateOnCurrentUpdate: false);
+                    child.BreedTime++; // give the child 1 extra tick than normal before it breeds to create a 'desync waterfall' of breed times
                 }
                 else
                 {
