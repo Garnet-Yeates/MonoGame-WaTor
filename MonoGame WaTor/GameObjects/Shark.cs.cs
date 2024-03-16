@@ -15,7 +15,7 @@ namespace MonoGame_WaTor.GameObjects
         public override Color Color => SharkColor;
         public override Texture2D Texture => SharkTexture;
 
-        public Shark(Entity[,] world, GroupedList<Entity> entities, short x, short y) : base(world, entities, x, y) { }
+        public Shark(Entity[,] world, PriorityGroupedList<Entity> entities, short x, short y) : base(world, entities, x, y) { }
 
         public static void LoadStaticContent(GraphicsDevice graphics)
         {

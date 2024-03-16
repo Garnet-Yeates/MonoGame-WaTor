@@ -17,17 +17,16 @@ namespace MonoGame_WaTor.GameObjects
 
         // Where am I in the Entity update list? Also a reference to my Node for efficient self-removal thru List reference
         public abstract byte GroupIndex { get; }
-        public GroupedList<Entity> Entities { get; private set; }
+        public PriorityGroupedList<Entity> Entities { get; private set; }
         public GroupedListNode<Entity> MyNode { get; private set; }
         public bool ExistsInWorld => MyNode is not null;
 
         // For drawing
         public abstract Color Color { get; }
-
         public abstract Texture2D Texture { get; }
 
         // Constructor
-        public Entity(Entity[,] world, GroupedList<Entity> entities, short x, short y)
+        public Entity(Entity[,] world, PriorityGroupedList<Entity> entities, short x, short y)
         {
             Entities = entities;
             World = world;

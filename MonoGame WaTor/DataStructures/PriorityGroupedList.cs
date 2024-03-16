@@ -14,14 +14,14 @@ namespace MonoGame_WaTor.DataStructures
         }
     }
 
-    public class GroupedList<T> : IEnumerable<T>
+    public class PriorityGroupedList<T> : IEnumerable<T>
     {
         private DoubleLinkedList<T>[] listGroups;
         public int Capacity { get; private set; }
         public byte GroupsCount { get; private set; }
         public int TotalElements { get; private set; }
 
-        public GroupedList(int initialCapacity = 1)
+        public PriorityGroupedList(int initialCapacity = 1)
         {
             Capacity = initialCapacity;
             GroupsCount = 0;

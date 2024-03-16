@@ -14,7 +14,7 @@ namespace MonoGame_WaTor.GameObjects
         public override Color Color => FishColor;
         public override Texture2D Texture => FishTexture;
 
-        public Fish(Entity[,] world, GroupedList<Entity> entities, short x, short y) : base(world, entities, x, y) { }
+        public Fish(Entity[,] world, PriorityGroupedList<Entity> entities, short x, short y) : base(world, entities, x, y) { }
 
         public static void LoadStaticContent(GraphicsDevice graphics)
         {
