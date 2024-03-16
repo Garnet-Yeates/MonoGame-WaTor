@@ -48,14 +48,14 @@ namespace MonoGame_WaTor.GameObjects
             Entities.Remove(MyNode);
         }
 
-        public void AddToWorld()
+        public void AddToWorld(bool updateOnCurrentUpdate = false)
         {
             if (ExistsInWorld) throw new Exception($"This {GetType().Name} already exists in the world ");
 
             if (World[X, Y] is not null) throw new Exception("Can not add an Entity onto another entity");
 
             World[X, Y] = this;
-            MyNode = Entities.Add(this, GroupIndex);
+            MyNode = updateOnCurrentUpdate ? Entities.AddLast(this, GroupIndex) : Entities.AddFirst(this, GroupIndex);
         }
 
         public void Move(int newX, int newY)

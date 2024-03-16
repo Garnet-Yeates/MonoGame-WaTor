@@ -18,7 +18,8 @@ namespace MonoGame_WaTor.DataStructures
 
     /// <summary>
     /// Represents a Double Linked List data structure that only allows:<br/>
-    /// - Adding at the end of the tail<br/>
+    /// - Adding before the head<br/>
+    /// - Adding after the tail<br/>
     /// - Iterating through all elements<br/>
     /// - Self removal of a <see cref="DoubleLinkedNode{T}"/> through a reference to that Node<br/>
     /// - Clearing all elements from the list<br/><br/>
@@ -41,16 +42,40 @@ namespace MonoGame_WaTor.DataStructures
 
         public int Size { get; private set; } = 0;
 
-        public DoubleLinkedNode<T> Add(T e)
+        public DoubleLinkedNode<T> AddFirst(T e)
         {
             DoubleLinkedNode<T> n = new(e);
-            Add(n);
+            AddFirst(n);
             return n;
         }
 
-        public void Add(DoubleLinkedNode<T> n)
+        public void AddFirst(DoubleLinkedNode<T> n)
         {
-            if (head == null)
+            if (tail == null)
+            {
+                head = n;
+                tail = n;
+            }
+            else
+            {
+                n.next = head;
+                head.prev = n;
+                head = n;
+            }
+
+            Size++;
+        }
+
+        public DoubleLinkedNode<T> AddLast(T e)
+        {
+            DoubleLinkedNode<T> n = new(e);
+            AddLast(n);
+            return n;
+        }
+
+        public void AddLast(DoubleLinkedNode<T> n)
+        {
+            if (tail == null)
             {
                 head = n;
                 tail = n;

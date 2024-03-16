@@ -50,7 +50,7 @@ namespace MonoGame_WaTor.DataStructures
             }
         }
 
-        public GroupedListNode<T> Add(T e, byte groupIndex)
+        public GroupedListNode<T> AddFirst(T e, byte groupIndex)
         {
             TotalElements++;
             if (groupIndex >= byte.MaxValue)
@@ -64,7 +64,25 @@ namespace MonoGame_WaTor.DataStructures
             }
 
             GroupedListNode<T> listNode = new(e, groupIndex);
-            listGroups[groupIndex].Add(listNode);
+            listGroups[groupIndex].AddFirst(listNode);
+            return listNode;
+        }
+
+        public GroupedListNode<T> AddLast(T e, byte groupIndex)
+        {
+            TotalElements++;
+            if (groupIndex >= byte.MaxValue)
+            {
+                throw new Exception($"Group index cannot be higher than {byte.MaxValue - 1} ");
+            }
+            if (GroupsCount < groupIndex + 1)
+            {
+                GroupsCount = (byte)(groupIndex + 1);
+                EnsureCapacity();
+            }
+
+            GroupedListNode<T> listNode = new(e, groupIndex);
+            listGroups[groupIndex].AddLast(listNode);
             return listNode;
         }
 
