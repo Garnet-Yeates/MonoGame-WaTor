@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework.Graphics;
+﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 using MonoGame_WaTor.DataStructures;
 using System;
 
@@ -20,6 +21,11 @@ namespace MonoGame_WaTor.GameObjects
         public GroupedListNode<Entity> MyNode { get; private set; }
         public bool ExistsInWorld => MyNode is not null;
 
+        // For drawing
+        public abstract Color Color { get; }
+
+        public abstract Texture2D Texture { get; }
+
         // Constructor
         public Entity(Entity[,] world, GroupedList<Entity> entities, short x, short y)
         {
@@ -27,6 +33,11 @@ namespace MonoGame_WaTor.GameObjects
             World = world;
             X = x;
             Y = y;
+        }
+
+        public virtual void Draw(SpriteBatch spriteBatch)
+        {
+            spriteBatch.Draw(Texture, new Rectangle(X * EntitySize, Y * EntitySize, EntitySize, EntitySize), Color);
         }
 
         public void RemoveFromWorld()
@@ -54,8 +65,6 @@ namespace MonoGame_WaTor.GameObjects
             Y = newY;
             World[X, Y] = this;
         }
-
-        public abstract void Draw(SpriteBatch spriteBatch);
 
         public abstract void Update();
     }

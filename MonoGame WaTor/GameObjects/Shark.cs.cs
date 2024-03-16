@@ -6,11 +6,14 @@ namespace MonoGame_WaTor.GameObjects
 {
     public class Shark : Entity
     {
+        public static byte SharkGroupIndex => 0;
         public static Texture2D SharkTexture { get; private set; }
 
         public static readonly Color SharkColor = Color.Orange;
 
-        public override byte GroupIndex => 0;
+        public override byte GroupIndex => SharkGroupIndex;
+        public override Color Color => SharkColor;
+        public override Texture2D Texture => SharkTexture;
 
         public Shark(Entity[,] world, GroupedList<Entity> entities, short x, short y) : base(world, entities, x, y) { }
 
@@ -23,11 +26,6 @@ namespace MonoGame_WaTor.GameObjects
         internal static void UnloadStaticContent()
         {
             SharkTexture.Dispose();
-        }
-
-        public override void Draw(SpriteBatch spriteBatch)
-        {
-            spriteBatch.Draw(SharkTexture, new Rectangle(X * EntitySize, Y * EntitySize, EntitySize, EntitySize), SharkColor);
         }
 
         public override void Update()
