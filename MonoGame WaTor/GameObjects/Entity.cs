@@ -2,13 +2,14 @@
 using Microsoft.Xna.Framework.Graphics;
 using MonoGame_WaTor.DataStructures;
 using System;
+using System.Diagnostics;
 
 namespace MonoGame_WaTor.GameObjects
 {
     public abstract class Entity
     {
         // Size in pixels of how big Entities are. Entities are represented as colored squares
-        public const int EntitySize = 25;
+        public const int EntitySize = 10;
 
         // Where am I in the world? Also a reference to the world itself for encapsulated movement
         public EntityGrid World { get; private set; }
@@ -28,8 +29,10 @@ namespace MonoGame_WaTor.GameObjects
         // Constructor
         public Entity(EntityGrid world, PriorityGroupedList<Entity> entities, short x, short y, bool addToWorld = true)
         {
-            Entities = entities;
             World = world;
+            Entities = entities;
+            World.EnsureWithinBounds(ref x, ref y);
+
             X = x;
             Y = y;
             if (addToWorld)
@@ -63,9 +66,14 @@ namespace MonoGame_WaTor.GameObjects
 
         public void Move(short newX, short newY)
         {
-            if (!ExistsInWorld) throw new Exception("Cannot add an entity that doesn't exist in the world");
+            World.EnsureWithinBounds(ref newX, ref newY);
 
-            if (World[X, Y] is not null) throw new Exception("Can not move an Entity onto another entity");
+            if (!ExistsInWorld) throw new Exception("Cannot add an Entity that doesn't exist in the world");
+
+            if (World[newX, newY] is not null) throw new Exception("Can not move an Entity onto another entity");
+
+            Debug.WriteLine($"My Location Rn {X} {Y}");
+            Debug.WriteLine($"EntityGrid at my location Rn: ${World[X, Y]}");
 
             World[X, Y] = null;
             X = newX;

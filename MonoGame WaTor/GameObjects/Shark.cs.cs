@@ -9,7 +9,7 @@ namespace MonoGame_WaTor.GameObjects
         public static byte SharkGroupIndex => 0;
         public static Texture2D SharkTexture { get; private set; }
 
-        public static readonly Color SharkColor = Color.Orange;
+        public static readonly Color SharkColor = new(191, 89, 219);
 
         public override byte GroupIndex => SharkGroupIndex;
         public override Color Color => SharkColor;
@@ -30,6 +30,7 @@ namespace MonoGame_WaTor.GameObjects
 
         public override void Update()
         {
+            Move((short)(X + 1), Y);
         }
     }
 }

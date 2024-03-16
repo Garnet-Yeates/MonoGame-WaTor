@@ -6,32 +6,30 @@ namespace MonoGame_WaTor.DataStructures
     {
         public readonly Entity[,] Grid;
 
-        public readonly int NumEntitiesFitX;
+        public readonly short NumEntitiesFitX;
 
-        public readonly int NumEntitiesFitY;
+        public readonly short NumEntitiesFitY;
 
-        public EntityGrid(int numEntitiesFitX, int numEntitiesFitY)
+        public EntityGrid(short numEntitiesFitX, short numEntitiesFitY)
         {
             NumEntitiesFitX = numEntitiesFitX;
             NumEntitiesFitY = numEntitiesFitY;
             Grid = new Entity[NumEntitiesFitX, NumEntitiesFitY];
         }
 
-        public Entity this[int x, int y]
+        public Entity this[short x, short y]
         {
             get
             {
-                EnsureWithinBounds(ref x, ref y);
                 return Grid[x, y];
             }
             set
             {
-                EnsureWithinBounds(ref x, ref y);
                 Grid[x, y] = value;
             }
         }
 
-        public void EnsureWithinBounds(ref int x, ref int y)
+        public void EnsureWithinBounds(ref short x, ref short y)
         {
             if (x < 0 || x >= NumEntitiesFitX)
             {
@@ -44,9 +42,9 @@ namespace MonoGame_WaTor.DataStructures
             }
         }
 
-        public static int Modulo(int a, int b)
+        public static short Modulo(short a, short b)
         {
-            return ((a % b) + b) % b;
+            return (short)(((a % b) + b) % b);
         }
     }
 }

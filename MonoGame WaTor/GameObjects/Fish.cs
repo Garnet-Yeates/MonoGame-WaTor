@@ -7,8 +7,10 @@ namespace MonoGame_WaTor.GameObjects
     public class Fish : Entity
     {
         public static byte FishGroupIndex => 1;
+
         public static Texture2D FishTexture { get; private set; }
-        public static Color FishColor => Color.Lime;
+
+        public static Color FishColor = new(228, 218, 19);
 
         public override byte GroupIndex => FishGroupIndex;
         public override Color Color => FishColor;
