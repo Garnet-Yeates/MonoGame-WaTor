@@ -23,6 +23,10 @@ namespace MonoGame_WaTor
         // 2D array to check if an entity exists at a specific 2D location
         public Entity[,] World { get; private set; }
 
+        // List to keep track of all existing entities in the world, grouped by priority
+        // Sharks will have priority 0 meaning they are processed first by the enumerator
+        public PriorityGroupedList<Entity> Entities { get; private set; }
+
         public WaTorGame()
         {
             graphics = new GraphicsDeviceManager(this);
@@ -34,6 +38,11 @@ namespace MonoGame_WaTor
         protected override void Initialize()
         {
             CalculateScreenSizeAndEntityCount();
+
+            // Every index of world is currently null
+            World = new Entity[NumEntitiesX, NumEntitiesY];
+            Entities = new();
+
             base.Initialize();
         }
 
@@ -63,9 +72,6 @@ namespace MonoGame_WaTor
             int height = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Height;
             Debug.WriteLine($"Updated! width={width} height={height}");
 
-            Entity originEntity = World[0, 0];
-            originEntity.Move(0, 1);
-
             base.Update(gameTime);
         }
 
@@ -74,21 +80,9 @@ namespace MonoGame_WaTor
             GraphicsDevice.Clear(Color.Black);
             spriteBatch.Begin();
 
-            for (int x = 0; x < NumEntitiesX; x++)
+            foreach (var entity in Entities)
             {
-                for (int y = 0; y < NumEntitiesY; y++)
-                {
-                    Entity entityHere = World[x, y];
-                    if (entityHere is null)
-                    {
-                        continue; // Any code below here is skipped
-                    }
-
-                    // Implied that entityHere is NOT null
-
-                    entityHere.Draw(spriteBatch);
-                    // Do something at World[x,y]
-                }
+                entity.Draw(spriteBatch);
             }
 
             spriteBatch.End();
@@ -117,13 +111,7 @@ namespace MonoGame_WaTor
             int calculatedWidth = NumEntitiesX * EntitySize;
             int calculatedHeight = NumEntitiesY * EntitySize;
 
-            // Every index of world is currently null
-            World = new Entity[NumEntitiesX, NumEntitiesY];
-
-            new Fish(World, 0, 0);
-
             SetGameScreenSize(calculatedWidth, calculatedHeight);
-
         }
     }
 }
