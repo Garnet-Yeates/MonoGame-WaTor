@@ -14,14 +14,8 @@ namespace MonoGame_WaTor
         private GraphicsDeviceManager graphics;
         private SpriteBatch spriteBatch;
 
-        // How many entities can we fit horizontally within our working area?
-        public short NumEntitiesX { get; private set; }
-
-        // How many entities can we fit vertically within our working area?
-        public short NumEntitiesY { get; private set; }
-
         // 2D array to check if an entity exists at a specific 2D location
-        public Entity[,] World { get; private set; }
+        public EntityGrid World { get; private set; }
 
         // List to keep track of all existing entities in the world, grouped by priority
         // Sharks will have priority 0 meaning they are processed first by the enumerator
@@ -37,10 +31,10 @@ namespace MonoGame_WaTor
 
         protected override void Initialize()
         {
-            CalculateScreenSizeAndEntityCount();
+            var (numEntitiesFitX, numEntitiesFitY) = CalculateScreenSizeAndEntityCount();
 
             // Every index of world is currently null
-            World = new Entity[NumEntitiesX, NumEntitiesY];
+            World = new EntityGrid(numEntitiesFitX, numEntitiesFitY);
             Entities = new();
 
             Fish f = new(World, Entities, 15, 15);
@@ -105,21 +99,23 @@ namespace MonoGame_WaTor
             graphics.ApplyChanges();
         }
 
-        private void CalculateScreenSizeAndEntityCount()
+        private (short, short) CalculateScreenSizeAndEntityCount()
         {
             float availableWidth = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Width * 0.9f;
             float availableHeight = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Height * 0.9f;
 
             // Find out how many entities can fit within available width and height, rounding down to prevent overfitting
-            NumEntitiesX = (short)(availableWidth / EntitySize);
-            NumEntitiesY = (short)(availableHeight / EntitySize);
+            short numEntitiesFitX = (short)(availableWidth / EntitySize);
+            short numEntitiesFitY = (short)(availableHeight / EntitySize);
 
             // Will always be exactly the same as availaleW/H or a bit smaller
             // Multiply the number of entities we are allowed to fit (rounded down) by their size to figure out the exact screen width and height needed
-            int calculatedWidth = NumEntitiesX * EntitySize;
-            int calculatedHeight = NumEntitiesY * EntitySize;
+            int calculatedWidth = numEntitiesFitX * EntitySize;
+            int calculatedHeight = numEntitiesFitY * EntitySize;
 
             SetGameScreenSize(calculatedWidth, calculatedHeight);
+
+            return (numEntitiesFitX, numEntitiesFitY);
         }
     }
 }

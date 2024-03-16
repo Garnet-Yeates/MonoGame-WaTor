@@ -11,7 +11,7 @@ namespace MonoGame_WaTor.GameObjects
         public const int EntitySize = 25;
 
         // Where am I in the world? Also a reference to the world itself for encapsulated movement
-        public Entity[,] World { get; private set; }
+        public EntityGrid World { get; private set; }
         public short X { get; private set; }
         public short Y { get; private set; }
 
@@ -26,7 +26,7 @@ namespace MonoGame_WaTor.GameObjects
         public abstract Texture2D Texture { get; }
 
         // Constructor
-        public Entity(Entity[,] world, PriorityGroupedList<Entity> entities, short x, short y, bool addToWorld = true)
+        public Entity(EntityGrid world, PriorityGroupedList<Entity> entities, short x, short y, bool addToWorld = true)
         {
             Entities = entities;
             World = world;
