@@ -55,6 +55,8 @@ namespace MonoGame_WaTor.GameObjects
         {
             if (ExistsInWorld) throw new Exception($"This {GetType().Name} already exists in the world ");
 
+            if (World[X, Y] is not null) throw new Exception("Can not add an Entity onto another entity");
+
             World[X, Y] = this;
             MyNode = Entities.Add(this, GroupIndex);
         }
@@ -62,6 +64,8 @@ namespace MonoGame_WaTor.GameObjects
         public void Move(short newX, short newY)
         {
             if (!ExistsInWorld) throw new Exception("Cannot add an entity that doesn't exist in the world");
+
+            if (World[X, Y] is not null) throw new Exception("Can not move an Entity onto another entity");
 
             World[X, Y] = null;
             X = newX;
