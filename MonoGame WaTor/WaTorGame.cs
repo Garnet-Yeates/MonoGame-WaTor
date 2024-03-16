@@ -26,7 +26,7 @@ namespace MonoGame_WaTor
         public WaTorGame()
         {
             graphics = new GraphicsDeviceManager(this);
-            TargetElapsedTime = TimeSpan.FromMilliseconds(1000 / 2f); // Run game at 5fps (200ms intervals)
+            TargetElapsedTime = TimeSpan.FromMilliseconds(1000 / 16f); // Run game at 5fps (200ms intervals)
             Content.RootDirectory = "Content";
             IsMouseVisible = true;
         }
@@ -39,8 +39,8 @@ namespace MonoGame_WaTor
             World = new EntityGrid(numEntitiesFitX, numEntitiesFitY);
             Entities = new();
 
-            Fish f = new(this, 15, 15);
-            Shark s = new(this, 30, 15);
+            new Fish(this, 15, 15).AddToWorld();
+            //      Shark s = new(this, 30, 15);
 
             base.Initialize();
         }
