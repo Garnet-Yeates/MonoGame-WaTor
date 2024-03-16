@@ -26,12 +26,16 @@ namespace MonoGame_WaTor.GameObjects
         public abstract Texture2D Texture { get; }
 
         // Constructor
-        public Entity(Entity[,] world, PriorityGroupedList<Entity> entities, short x, short y)
+        public Entity(Entity[,] world, PriorityGroupedList<Entity> entities, short x, short y, bool addToWorld = true)
         {
             Entities = entities;
             World = world;
             X = x;
             Y = y;
+            if (addToWorld)
+            {
+                AddToWorld();
+            }
         }
 
         public virtual void Draw(SpriteBatch spriteBatch)
