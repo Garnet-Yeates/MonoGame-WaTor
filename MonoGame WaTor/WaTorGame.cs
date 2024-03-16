@@ -43,6 +43,9 @@ namespace MonoGame_WaTor
             World = new Entity[NumEntitiesX, NumEntitiesY];
             Entities = new();
 
+            Fish f = new(World, Entities, 15, 15);
+            Shark s = new(World, Entities, 15, 16);
+
             base.Initialize();
         }
 
@@ -65,18 +68,23 @@ namespace MonoGame_WaTor
         // 5 fps
         protected override void Update(GameTime gameTime)
         {
+            Debug.WriteLine($"Is update running behind? {gameTime.IsRunningSlowly}");
+
             if (Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
 
-            int width = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Width;
-            int height = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Height;
-            Debug.WriteLine($"Updated! width={width} height={height}");
+            foreach (var entity in Entities)
+            {
+                entity.Update();
+            }
 
             base.Update(gameTime);
         }
 
         protected override void Draw(GameTime gameTime)
         {
+            Debug.WriteLine($"Is draw running behind? {gameTime.IsRunningSlowly}");
+
             GraphicsDevice.Clear(Color.Black);
             spriteBatch.Begin();
 
