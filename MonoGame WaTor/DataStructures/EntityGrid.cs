@@ -1,4 +1,5 @@
 ﻿using MonoGame_WaTor.GameObjects;
+using System.Collections.Generic;
 
 namespace MonoGame_WaTor.DataStructures
 {
@@ -6,18 +7,30 @@ namespace MonoGame_WaTor.DataStructures
     {
         public readonly Entity[,] Grid;
 
-        public readonly short NumEntitiesFitX;
+        public readonly int NumEntitiesFitX;
 
-        public readonly short NumEntitiesFitY;
+        public readonly int NumEntitiesFitY;
 
-        public EntityGrid(short numEntitiesFitX, short numEntitiesFitY)
+        public EntityGrid(int numEntitiesFitX, int numEntitiesFitY)
         {
             NumEntitiesFitX = numEntitiesFitX;
             NumEntitiesFitY = numEntitiesFitY;
             Grid = new Entity[NumEntitiesFitX, NumEntitiesFitY];
         }
 
-        public Entity this[short x, short y]
+        public Entity this[in Point2D p]
+        {
+            get
+            {
+                return Grid[p.X, p.Y];
+            }
+            set
+            {
+                Grid[p.X, p.Y] = value;
+            }
+        }
+
+        public Entity this[int x, int y]
         {
             get
             {
@@ -29,22 +42,53 @@ namespace MonoGame_WaTor.DataStructures
             }
         }
 
-        public void EnsureWithinBounds(ref short x, ref short y)
+        public static int Modulo(int a, int b)
         {
-            if (x < 0 || x >= NumEntitiesFitX)
-            {
-                x = Modulo(x, NumEntitiesFitX);
-            }
-
-            if (y < 0 || y >= NumEntitiesFitY)
-            {
-                y = Modulo(y, NumEntitiesFitY);
-            }
+            return ((a % b) + b) % b;
         }
 
-        public static short Modulo(short a, short b)
+        public IEnumerable<Point2D> GetAdjacentLocations(in Point2D p)
         {
-            return (short)(((a % b) + b) % b);
+            return GetAdjacentLocations(p.X, p.Y);
+        }
+
+        public IEnumerable<Point2D> GetAdjacentLocations(int x, int y)
+        {
+            if (x < NumEntitiesFitX - 1)
+            {
+                yield return new Point2D(x + 1, y);
+            }
+            else
+            {
+                yield return new Point2D(0, y);
+            }
+
+            if (x > 0)
+            {
+                yield return new Point2D(x - 1, y);
+            }
+            else
+            {
+                yield return new Point2D(NumEntitiesFitX - 1, y);
+            }
+
+            if (y < NumEntitiesFitY - 1)
+            {
+                yield return new Point2D(x, y + 1);
+            }
+            else
+            {
+                yield return new Point2D(x, 0);
+            }
+
+            if (y > 0)
+            {
+                yield return new Point2D(x, y - 1);
+            }
+            else
+            {
+                yield return new Point2D(x, NumEntitiesFitY - 1);
+            }
         }
     }
 }
