@@ -2,7 +2,6 @@
 using Microsoft.Xna.Framework.Graphics;
 using MonoGame_WaTor.DataStructures;
 using System;
-using System.Diagnostics;
 
 namespace MonoGame_WaTor.GameObjects
 {
@@ -68,9 +67,6 @@ namespace MonoGame_WaTor.GameObjects
             if (!ExistsInWorld) throw new Exception("Cannot add an Entity that doesn't exist in the world");
 
             if (World[newX, newY] is not null) throw new Exception("Can not move an Entity onto another entity");
-
-            Debug.WriteLine($"My Location Rn {X} {Y}");
-            Debug.WriteLine($"EntityGrid at my location Rn: ${World[X, Y]}");
 
             World[X, Y] = null;
             X = newX;
