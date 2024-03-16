@@ -39,8 +39,8 @@ namespace MonoGame_WaTor
             World = new EntityGrid(numEntitiesFitX, numEntitiesFitY);
             Entities = new();
 
-            Fish f = new(World, Entities, 15, 15);
-            Shark s = new(World, Entities, 30, 15);
+            Fish f = new(this, 15, 15);
+            Shark s = new(this, 30, 15);
 
             base.Initialize();
         }

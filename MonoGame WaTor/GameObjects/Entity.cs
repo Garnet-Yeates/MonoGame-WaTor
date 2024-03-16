@@ -10,14 +10,16 @@ namespace MonoGame_WaTor.GameObjects
         // Size in pixels of how big Entities are. Entities are represented as colored squares
         public const int EntitySize = 10;
 
+        public WaTorGame Game { get; }
+
         // Where am I in the world? Also a reference to the world itself for encapsulated movement
-        public EntityGrid World { get; private set; }
+        public EntityGrid World => Game.World;
         public int X { get; private set; }
         public int Y { get; private set; }
 
         // Where am I in the Entity update list? Also a reference to my Node for efficient self-removal thru List reference
         public abstract byte GroupIndex { get; }
-        public PriorityGroupedList<Entity> Entities { get; private set; }
+        public PriorityGroupedList<Entity> Entities => Game.Entities;
         public GroupedListNode<Entity> MyNode { get; private set; }
         public bool ExistsInWorld => MyNode is not null;
 
@@ -26,17 +28,11 @@ namespace MonoGame_WaTor.GameObjects
         public abstract Texture2D Texture { get; }
 
         // Constructor
-        public Entity(EntityGrid world, PriorityGroupedList<Entity> entities, int x, int y, bool addToWorld = true)
+        public Entity(WaTorGame game, int x, int y)
         {
-            World = world;
-            Entities = entities;
-
+            Game = game;
             X = x;
             Y = y;
-            if (addToWorld)
-            {
-                AddToWorld();
-            }
         }
 
         public virtual void Draw(SpriteBatch spriteBatch)

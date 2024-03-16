@@ -1,6 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using MonoGame_WaTor.DataStructures;
 
 namespace MonoGame_WaTor.GameObjects
 {
@@ -15,7 +14,7 @@ namespace MonoGame_WaTor.GameObjects
         public override Color Color => SharkColor;
         public override Texture2D Texture => SharkTexture;
 
-        public Shark(EntityGrid world, PriorityGroupedList<Entity> entities, int x, int y, bool addToWorld = true) : base(world, entities, x, y, addToWorld) { }
+        public Shark(WaTorGame game, int x, int y) : base(game, x, y) { }
 
         public static void LoadStaticContent(GraphicsDevice graphics)
         {
@@ -30,7 +29,6 @@ namespace MonoGame_WaTor.GameObjects
 
         public override void Update()
         {
-            Move(X + 1, Y);
         }
     }
 }

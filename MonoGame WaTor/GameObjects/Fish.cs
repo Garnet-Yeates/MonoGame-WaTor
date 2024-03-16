@@ -20,7 +20,7 @@ namespace MonoGame_WaTor.GameObjects
         public static readonly Color FishColor = new(228, 218, 19);
         public override Color Color => FishColor;
 
-        public Fish(EntityGrid world, PriorityGroupedList<Entity> entities, int x, int y, bool addToWorld = true) : base(world, entities, x, y, addToWorld)
+        public Fish(WaTorGame game, int x, int y) : base(game, x, y)
         {
             BreedTime = FishBreedTime;
         }
@@ -52,7 +52,7 @@ namespace MonoGame_WaTor.GameObjects
                 Point2D movingTo = nearby[WaTorGame.R.Next(nearby.Count)];
                 if (reproducing)
                 {
-                    new Fish(World, Entities, movingTo.X, movingTo.Y);
+                    new Fish(Game, movingTo.X, movingTo.Y);
                 }
                 else
                 {
