@@ -98,12 +98,12 @@ namespace MonoGame_WaTor.DataStructures
                 head = null;
                 tail = null;
             }
-            else if (n == head) // implied that n.next isn't null
+            else if (n == head) // implied that n.next isn't null, and n.prev is null
             {
                 head = n.next;
                 n.next.prev = null;
             }
-            else if (n == tail) // implied that n.prev isn't null
+            else if (n == tail) // implied that n.prev isn't null, and n.next is null
             {
                 tail = n.prev;
                 n.prev.next = null;
