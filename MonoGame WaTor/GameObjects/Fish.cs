@@ -8,7 +8,7 @@ namespace MonoGame_WaTor.GameObjects
 {
     public class Fish : Entity
     {
-        public static int BaseBreedTime { get; set; } = 5;
+        public static int BaseBreedTime { get; set; } = 9;
 
         private int breedtime;
 
