@@ -11,6 +11,8 @@ namespace MonoGame_WaTor.DataStructures
 
         public readonly int NumEntitiesFitY;
 
+        public int TotalEntitiesThatCanFit => Grid.Length;
+
         public EntityGrid(int numEntitiesFitX, int numEntitiesFitY)
         {
             NumEntitiesFitX = numEntitiesFitX;

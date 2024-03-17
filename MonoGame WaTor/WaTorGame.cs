@@ -26,7 +26,7 @@ namespace MonoGame_WaTor
         public WaTorGame()
         {
             graphics = new GraphicsDeviceManager(this);
-            TargetElapsedTime = TimeSpan.FromMilliseconds(1000 / 20f); // Run game at 5fps (200ms intervals)
+            TargetElapsedTime = TimeSpan.FromMilliseconds(1000 / 45f); // Run game at 5fps (200ms intervals)
             Content.RootDirectory = "Content";
             IsMouseVisible = true;
         }
@@ -38,9 +38,48 @@ namespace MonoGame_WaTor
             World = new EntityGrid(numEntitiesFitX, numEntitiesFitY);
             Entities = new();
 
-            new Fish(this, 10, 10).AddToWorld();
+            AddRandomEntities();
 
             base.Initialize();
+        }
+
+        private void AddRandomEntities()
+        {
+            double percFishToAdd = 0.01;
+            int numFishToAdd = (int)(percFishToAdd * World.TotalEntitiesThatCanFit);
+            int fishAdded = 0;
+
+            double percSharksToAdd = 0.02;
+            int numSharksToAdd = (int)(percSharksToAdd * World.TotalEntitiesThatCanFit);
+            int sharksAdded = 0;
+
+            while (fishAdded < numFishToAdd)
+            {
+                int x = R.Next(World.NumEntitiesFitX);
+                int y = R.Next(World.NumEntitiesFitY);
+
+                if (World[x, y] is not null)
+                {
+                    continue;
+                }
+
+                new Fish(this, x, y).AddToWorld(updateOnCurrentUpdate: false);
+                fishAdded++;
+            }
+
+            while (sharksAdded < numSharksToAdd)
+            {
+                int x = R.Next(World.NumEntitiesFitX);
+                int y = R.Next(World.NumEntitiesFitY);
+
+                if (World[x, y] is not null)
+                {
+                    continue;
+                }
+
+                new Shark(this, x, y).AddToWorld(updateOnCurrentUpdate: false);
+                sharksAdded++;
+            }
         }
 
         // Load our textures and initialize SpriteBatch
