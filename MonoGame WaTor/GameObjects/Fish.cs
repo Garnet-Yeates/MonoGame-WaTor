@@ -8,8 +8,9 @@ namespace MonoGame_WaTor.GameObjects
 {
     public class Fish : Entity
     {
-        public static int FishBreedTime = 5;
-        public int BreedTime;
+        public static int BaseBreedTime { get; set; }
+
+        private int breedtime;
 
         public static byte FishGroupIndex => 1;
         public override byte GroupIndex => FishGroupIndex;
@@ -22,7 +23,7 @@ namespace MonoGame_WaTor.GameObjects
 
         public Fish(WaTorGame game, int x, int y) : base(game, x, y)
         {
-            BreedTime = FishBreedTime;
+            breedtime = BaseBreedTime;
         }
 
         public static void LoadStaticContent(GraphicsDevice graphics)
@@ -38,12 +39,12 @@ namespace MonoGame_WaTor.GameObjects
 
         public override void Update()
         {
-            BreedTime--;
+            breedtime--;
             bool reproducing = false;
-            if (BreedTime == 0)
+            if (breedtime == 0)
             {
                 reproducing = true;
-                BreedTime = FishBreedTime;
+                breedtime = BaseBreedTime;
             }
 
             List<Point2D> nearby = World.GetAdjacentEmptyLocations(X, Y).ToList();
@@ -52,9 +53,9 @@ namespace MonoGame_WaTor.GameObjects
                 Point2D movingTo = nearby[WaTorGame.R.Next(nearby.Count)];
                 if (reproducing)
                 {
-                    Fish child = new Fish(Game, movingTo.X, movingTo.Y);
+                    Fish child = new(Game, movingTo.X, movingTo.Y);
                     child.AddToWorld(updateOnCurrentUpdate: false);
-                    child.BreedTime++; // give the child 1 extra tick than normal before it breeds to create a 'desync waterfall' of breed times
+                    child.breedtime++; // give the child 1 extra tick than normal before it breeds to create a 'desync waterfall' of breed times
                 }
                 else
                 {
