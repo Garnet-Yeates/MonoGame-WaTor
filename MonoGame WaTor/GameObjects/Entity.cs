@@ -70,6 +70,11 @@ namespace MonoGame_WaTor.GameObjects
             World[X, Y] = this;
         }
 
+        public void Move(Point2D p)
+        {
+            Move(p.X, p.Y);
+        }
+
         public abstract void Update();
     }
 }
