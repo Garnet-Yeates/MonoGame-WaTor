@@ -8,11 +8,11 @@ namespace MonoGame_WaTor.GameObjects
 {
     public class Shark : Entity
     {
-        public static int BaseFishTillBreed { get; set; }
+        public static int BaseFishTillBreed { get; set; } = 2;
         private int fishTillBreed;
 
-        public static int EnergyGainedFromEatingFish { get; set; }
-        public static int BaseEnergy { get; set; }
+        public static int EnergyGainedFromEatingFish { get; set; } = 5;
+        public static int BaseEnergy { get; set; } = 25;
         private int energy;
 
         public static byte SharkGroupIndex => 0;
@@ -69,7 +69,8 @@ namespace MonoGame_WaTor.GameObjects
 
                 if (fishTillBreed == 0)
                 {
-                    Fish child = new(Game, randomFishSquare.X, randomFishSquare.Y);
+                    fishTillBreed = BaseFishTillBreed;
+                    Shark child = new(Game, randomFishSquare.X, randomFishSquare.Y);
                     child.AddToWorld(updateOnCurrentUpdate: false);
                 }
                 else
@@ -80,7 +81,7 @@ namespace MonoGame_WaTor.GameObjects
             }
             else if (emptySquares.Any())
             {
-                Move(emptySquares[WaTorGame.R.Next(fishSquares.Count)]);
+                Move(emptySquares[WaTorGame.R.Next(emptySquares.Count)]);
             }
 
             if (energy == 0)
