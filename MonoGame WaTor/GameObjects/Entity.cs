@@ -8,7 +8,7 @@ namespace MonoGame_WaTor.GameObjects
     public abstract class Entity
     {
         // Size in pixels of how big Entities are. Entities are represented as colored squares
-        public const int EntitySize = 1;
+        public const int EntitySize = 2;
 
         public WaTorGame Game { get; }
 
@@ -27,7 +27,6 @@ namespace MonoGame_WaTor.GameObjects
         public abstract Color Color { get; }
         public abstract Texture2D Texture { get; }
 
-        // Constructor
         public Entity(WaTorGame game, int x, int y)
         {
             Game = game;

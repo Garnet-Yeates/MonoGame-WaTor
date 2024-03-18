@@ -25,9 +25,9 @@ namespace MonoGame_WaTor
 
         public WaTorGame()
         {
-            IsFixedTimeStep = false;
+            IsFixedTimeStep = true;
             graphics = new GraphicsDeviceManager(this);
-            TargetElapsedTime = TimeSpan.FromMilliseconds(1000 / 40f); // Run game at 30 FPS
+            TargetElapsedTime = TimeSpan.FromMilliseconds(1000 / 30f); // Run game at 30 FPS
             Content.RootDirectory = "Content";
             IsMouseVisible = true;
         }
@@ -39,6 +39,7 @@ namespace MonoGame_WaTor
             World = new EntityGrid(numEntitiesFitX, numEntitiesFitY);
             Entities = new();
 
+            Debug.WriteLine($"Max Entities: {World.TotalEntitiesThatCanFit}");
             AddRandomEntities();
 
             base.Initialize();
@@ -83,36 +84,22 @@ namespace MonoGame_WaTor
             }
         }
 
-        // Load our textures and initialize SpriteBatch
-        protected override void LoadContent()
-        {
-            spriteBatch = new SpriteBatch(GraphicsDevice);
-            Fish.LoadStaticContent(GraphicsDevice);
-            Shark.LoadStaticContent(GraphicsDevice);
-        }
+        private bool isRunningEntityUpdates = false;
 
-        // Unload our textures
-        protected override void UnloadContent()
-        {
-            Fish.UnloadStaticContent();
-            Shark.UnloadStaticContent();
-        }
-
-        int updateCt = 0;
         protected override void Update(GameTime gameTime)
         {
-            if (gameTime.IsRunningSlowly && updateCt++ % 10 == 0)
-            {
-                Debug.WriteLine("Game running behind clock");
-                Debug.WriteLine(Entities.TotalElements);
-            }
-
             if (Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
 
-            foreach (var entity in Entities)
+            if (Keyboard.GetState().IsKeyDown(Keys.P))
+                isRunningEntityUpdates = !isRunningEntityUpdates;
+
+            if (isRunningEntityUpdates)
             {
-                entity.Update();
+                foreach (var entity in Entities)
+                {
+                    entity.Update();
+                }
             }
 
             base.Update(gameTime);
@@ -142,8 +129,8 @@ namespace MonoGame_WaTor
 
         private (int, int) CalculateScreenSizeAndEntityCount()
         {
-            float availableWidth = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Width * 0.8f;
-            float availableHeight = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Height * 0.85f;
+            float availableWidth = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Width * 0.85f;
+            float availableHeight = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Height * 0.9f;
 
             // Find out how many entities can fit within available width and height, rounding down to prevent overfitting
             int numEntitiesFitX = (int)(availableWidth / EntitySize);
@@ -157,6 +144,21 @@ namespace MonoGame_WaTor
             SetGameScreenSize(calculatedWidth, calculatedHeight);
 
             return (numEntitiesFitX, numEntitiesFitY);
+        }
+
+        // Load our textures and initialize SpriteBatch
+        protected override void LoadContent()
+        {
+            spriteBatch = new SpriteBatch(GraphicsDevice);
+            Fish.LoadStaticContent(GraphicsDevice);
+            Shark.LoadStaticContent(GraphicsDevice);
+        }
+
+        // Unload our textures
+        protected override void UnloadContent()
+        {
+            Fish.UnloadStaticContent();
+            Shark.UnloadStaticContent();
         }
     }
 }

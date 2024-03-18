@@ -12,7 +12,7 @@ namespace MonoGame_WaTor.GameObjects
         private int fishTillBreed;
 
         public static int EnergyGainedFromEatingFish { get; set; } = 5;
-        public static int BaseEnergy { get; set; } = 10;
+        public static int BaseEnergy { get; set; } = 5;
         private int energy;
 
         public static byte SharkGroupIndex => 0;
