@@ -4,7 +4,9 @@ using Microsoft.Xna.Framework.Input;
 using MonoGame_WaTor.DataStructures;
 using MonoGame_WaTor.GameObjects;
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
+using System.Threading;
 using static MonoGame_WaTor.GameObjects.Entity;
 
 namespace MonoGame_WaTor
@@ -32,8 +34,15 @@ namespace MonoGame_WaTor
             IsMouseVisible = true;
         }
 
+        public const int NumIntervals = 4;
+        public WorkInterval[] WorkIntervals { get; private set; }
+
+        public class LockObject { }
+
         protected override void Initialize()
         {
+            spriteBatch = new SpriteBatch(GraphicsDevice);
+
             var (numEntitiesFitX, numEntitiesFitY) = CalculateScreenSizeAndEntityCount();
 
             World = new EntityGrid(numEntitiesFitX, numEntitiesFitY);
@@ -42,12 +51,29 @@ namespace MonoGame_WaTor
             Debug.WriteLine($"Max Entities: {World.TotalEntitiesThatCanFit}");
             AddRandomEntities();
 
+            // Set up multithreading stuff
+            UnsafeXValues = new();
+            WorkIntervals = Threading.DivideWorkIntoIntervals(World.NumEntitiesFitX, NumIntervals);
+            spriteBatches = new SpriteBatch[NumIntervals];
+            drawResetEvents = new ManualResetEvent[NumIntervals];
+            updateResetEvents = new ManualResetEvent[NumIntervals];
+
+            foreach (var workInterval in WorkIntervals)
+            {
+                UnsafeXValues.Add(workInterval.Start, new());
+                UnsafeXValues.Add(workInterval.End, new());
+            }
+            for (int i = 0; i < spriteBatches.Length; i++)
+            {
+                spriteBatches[i] = new(GraphicsDevice);
+            }
+
             base.Initialize();
         }
 
         private void AddRandomEntities()
         {
-            double percFishToAdd = 0.09;
+            double percFishToAdd = 0.9;
             int numFishToAdd = (int)(percFishToAdd * World.TotalEntitiesThatCanFit);
             int fishAdded = 0;
 
@@ -96,18 +122,106 @@ namespace MonoGame_WaTor
 
             if (isRunningEntityUpdates)
             {
-                foreach (var entity in Entities)
+                if (false)
                 {
-                    entity.Update();
+                    UpdateMT();
+                }
+                else
+                {
+                    UpdateST();
                 }
             }
 
             base.Update(gameTime);
         }
 
+        private void UpdateST()
+        {
+            foreach (var entity in Entities)
+            {
+                entity.Update();
+            }
+        }
+
+        // What x values do we need to use locked context for when doing the game update loop?
+        // Keep in mind that for painting, we do not need locked context ever
+        public Dictionary<int, LockObject> UnsafeXValues { get; private set; }
+
+        private ManualResetEvent[] updateResetEvents;
+
+
+        private void UpdateMT()
+        {
+            // Re allocate the draw reset events
+            for (int i = 0; i < NumIntervals; i++)
+            {
+                updateResetEvents[i] = new ManualResetEvent(false);
+            }
+
+            // Call DoDrawWork from multiple threads
+            for (int i = 0; i < NumIntervals; i++)
+            {
+                ThreadPool.QueueUserWorkItem(new WaitCallback(DoDrawWork), i);
+            }
+
+            // Wait for all work to finish
+            WaitHandle.WaitAll(drawResetEvents);
+        }
+
+        private void DoUpdateWork(object state)
+        {
+            int intervalIndex = (int)state;
+            WorkInterval myInterval = WorkIntervals[intervalIndex];
+
+            for (int x = myInterval.Start; x <= myInterval.End; x++)
+            {
+                for (int y = 0; y < World.NumEntitiesFitY; y++)
+                {
+                    if (World[x, y] is Entity e)
+                    {
+                        if (UnsafeXValues.ContainsKey(x))
+                        {
+                            lock (UnsafeXValues[x])
+                            {
+                                e.Update();
+                            }
+                        }
+                        else
+                        {
+                            e.Update();
+                        }
+                    }
+                }
+            }
+
+            // Signal that the work is finished
+            ManualResetEvent resetEvent = updateResetEvents[intervalIndex];
+            resetEvent.Set();
+        }
+
+
         protected override void Draw(GameTime gameTime)
         {
             GraphicsDevice.Clear(Color.Black);
+            if (gameTime.IsRunningSlowly)
+            {
+                Debug.WriteLine("Running slow in draw");
+            }
+
+            if (false)
+            {
+                DrawMT();
+            }
+            else
+            {
+                DrawST();
+            }
+
+            base.Draw(gameTime);
+        }
+
+        private void DrawST()
+        {
             spriteBatch.Begin();
 
             foreach (var entity in Entities)
@@ -116,8 +230,61 @@ namespace MonoGame_WaTor
             }
 
             spriteBatch.End();
+        }
 
-            base.Draw(gameTime);
+        private ManualResetEvent[] drawResetEvents;
+        private SpriteBatch[] spriteBatches;
+
+        protected void DrawMT()
+        {
+            // Re allocate the draw reset events
+            for (int i = 0; i < NumIntervals; i++)
+            {
+                drawResetEvents[i] = new ManualResetEvent(false);
+            }
+
+            // Begin all batches
+            foreach (var batch in spriteBatches)
+            {
+                batch.Begin();
+            }
+
+            // Call DoDrawWork from multiple threads
+            for (int i = 0; i < NumIntervals; i++)
+            {
+                ThreadPool.QueueUserWorkItem(new WaitCallback(DoDrawWork), i);
+            }
+
+            // Wait for all work to finish
+            WaitHandle.WaitAll(drawResetEvents);
+
+            // End all batches
+            foreach (var batch in spriteBatches)
+            {
+                batch.End();
+            }
+        }
+
+        private void DoDrawWork(object state)
+        {
+            int intervalIndex = (int)state;
+            SpriteBatch myBatch = spriteBatches[intervalIndex];
+            WorkInterval myInterval = WorkIntervals[intervalIndex];
+
+            for (int x = myInterval.Start; x <= myInterval.End; x++)
+            {
+                for (int y = 0; y < World.NumEntitiesFitY; y++)
+                {
+                    if (World[x, y] is Entity e)
+                    {
+                        e.Draw(myBatch);
+                    }
+                }
+            }
+
+            // Signal that the work is finished
+            ManualResetEvent resetEvent = drawResetEvents[intervalIndex];
+            resetEvent.Set();
         }
 
         private void SetGameScreenSize(int w, int h)
@@ -149,7 +316,6 @@ namespace MonoGame_WaTor
         // Load our textures and initialize SpriteBatch
         protected override void LoadContent()
         {
-            spriteBatch = new SpriteBatch(GraphicsDevice);
             Fish.LoadStaticContent(GraphicsDevice);
             Shark.LoadStaticContent(GraphicsDevice);
         }
