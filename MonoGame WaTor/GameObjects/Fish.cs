@@ -8,8 +8,7 @@ namespace MonoGame_WaTor.GameObjects
 {
     public class Fish : Entity
     {
-        public static int BaseBreedTime { get; set; } = 9;
-
+        public static int BaseBreedTime { get; set; } = 20;
         private int breedtime;
 
         public static byte FishGroupIndex => 1;
@@ -18,23 +17,12 @@ namespace MonoGame_WaTor.GameObjects
         public static Texture2D FishTexture { get; private set; }
         public override Texture2D Texture => FishTexture;
 
-        public static readonly Color FishColor = new(228, 218, 19);
+        public static readonly Color FishColor = Color.Lime;
         public override Color Color => FishColor;
 
         public Fish(WaTorGame game, int x, int y) : base(game, x, y)
         {
             breedtime = BaseBreedTime;
-        }
-
-        public static void LoadStaticContent(GraphicsDevice graphics)
-        {
-            FishTexture = new Texture2D(graphics, width: 1, height: 1);
-            FishTexture.SetData(new[] { FishColor });
-        }
-
-        internal static void UnloadStaticContent()
-        {
-            FishTexture.Dispose();
         }
 
         public override void Update()
@@ -62,6 +50,17 @@ namespace MonoGame_WaTor.GameObjects
                     Move(movingTo.X, movingTo.Y);
                 }
             }
+        }
+
+        public static void LoadStaticContent(GraphicsDevice graphics)
+        {
+            FishTexture = new Texture2D(graphics, width: 1, height: 1);
+            FishTexture.SetData(new[] { FishColor });
+        }
+
+        internal static void UnloadStaticContent()
+        {
+            FishTexture.Dispose();
         }
     }
 }

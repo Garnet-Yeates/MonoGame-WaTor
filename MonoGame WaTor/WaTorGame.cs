@@ -25,8 +25,9 @@ namespace MonoGame_WaTor
 
         public WaTorGame()
         {
+            IsFixedTimeStep = false;
             graphics = new GraphicsDeviceManager(this);
-            TargetElapsedTime = TimeSpan.FromMilliseconds(1000 / 45f); // Run game at 5fps (200ms intervals)
+            TargetElapsedTime = TimeSpan.FromMilliseconds(1000 / 40f); // Run game at 30 FPS
             Content.RootDirectory = "Content";
             IsMouseVisible = true;
         }
@@ -45,11 +46,11 @@ namespace MonoGame_WaTor
 
         private void AddRandomEntities()
         {
-            double percFishToAdd = 0.01;
+            double percFishToAdd = 0.09;
             int numFishToAdd = (int)(percFishToAdd * World.TotalEntitiesThatCanFit);
             int fishAdded = 0;
 
-            double percSharksToAdd = 0.02;
+            double percSharksToAdd = 0.01;
             int numSharksToAdd = (int)(percSharksToAdd * World.TotalEntitiesThatCanFit);
             int sharksAdded = 0;
 
@@ -141,8 +142,8 @@ namespace MonoGame_WaTor
 
         private (int, int) CalculateScreenSizeAndEntityCount()
         {
-            float availableWidth = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Width * 0.9f;
-            float availableHeight = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Height * 0.9f;
+            float availableWidth = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Width * 0.8f;
+            float availableHeight = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Height * 0.85f;
 
             // Find out how many entities can fit within available width and height, rounding down to prevent overfitting
             int numEntitiesFitX = (int)(availableWidth / EntitySize);

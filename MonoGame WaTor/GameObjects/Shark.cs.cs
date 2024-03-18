@@ -12,13 +12,13 @@ namespace MonoGame_WaTor.GameObjects
         private int fishTillBreed;
 
         public static int EnergyGainedFromEatingFish { get; set; } = 5;
-        public static int BaseEnergy { get; set; } = 25;
+        public static int BaseEnergy { get; set; } = 10;
         private int energy;
 
         public static byte SharkGroupIndex => 0;
         public static Texture2D SharkTexture { get; private set; }
 
-        public static readonly Color SharkColor = new(191, 89, 219);
+        public static readonly Color SharkColor = new(0, 125, 255);
 
         public override byte GroupIndex => SharkGroupIndex;
         public override Color Color => SharkColor;
@@ -28,17 +28,6 @@ namespace MonoGame_WaTor.GameObjects
         {
             energy = BaseEnergy;
             fishTillBreed = BaseFishTillBreed;
-        }
-
-        public static void LoadStaticContent(GraphicsDevice graphics)
-        {
-            SharkTexture = new Texture2D(graphics, width: 1, height: 1);
-            SharkTexture.SetData(new[] { SharkColor });
-        }
-
-        internal static void UnloadStaticContent()
-        {
-            SharkTexture.Dispose();
         }
 
         public override void Update()
@@ -77,7 +66,6 @@ namespace MonoGame_WaTor.GameObjects
                 {
                     Move(randomFishSquare);
                 }
-                // Energy inc, possibly breed
             }
             else if (emptySquares.Any())
             {
@@ -88,6 +76,16 @@ namespace MonoGame_WaTor.GameObjects
             {
                 RemoveFromWorld();
             }
+        }
+        public static void LoadStaticContent(GraphicsDevice graphics)
+        {
+            SharkTexture = new Texture2D(graphics, width: 1, height: 1);
+            SharkTexture.SetData(new[] { SharkColor });
+        }
+
+        internal static void UnloadStaticContent()
+        {
+            SharkTexture.Dispose();
         }
     }
 }
