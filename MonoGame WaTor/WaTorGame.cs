@@ -11,6 +11,11 @@ using static MonoGame_WaTor.GameObjects.Entity;
 
 namespace MonoGame_WaTor
 {
+    public class MarkHolder
+    {
+        public bool MarkValue { get; set; } = true;
+    }
+
     public partial class WaTorGame : Game
     {
         private static readonly Random R = new();
@@ -103,21 +108,15 @@ namespace MonoGame_WaTor
 
         private void UpdateMT()
         {
-            // Re allocate the draw reset events
-            for (int i = 0; i < NumIntervals; i++)
-            {
-                UpdateResetEvents[i] = new ManualResetEvent(false);
-            }
+            CurrentMarkHolder.MarkValue = false;
+            CurrentMarkHolder = new();
 
-            // Call DoDrawWork from multiple threads
-            for (int i = 0; i < NumIntervals; i++)
-            {
-                ThreadPool.QueueUserWorkItem(new WaitCallback(DoUpdateWork), i);
-            }
-
-            // Wait for all work to finish
+            for (int i = 0; i < NumIntervals; i++) UpdateResetEvents[i] = new ManualResetEvent(false);
+            for (int i = 0; i < NumIntervals; i++) ThreadPool.QueueUserWorkItem(new WaitCallback(DoUpdateWork), i);
             WaitHandle.WaitAll(UpdateResetEvents);
         }
+
+        public MarkHolder CurrentMarkHolder { get; set; } = new();
 
         private void DoUpdateWork(object state)
         {
@@ -127,6 +126,7 @@ namespace MonoGame_WaTor
             ManualResetEvent myResetEvent = UpdateResetEvents[intervalIndex];
 
             List<Point2D> pointsToProcess = myInterval.PointsToProcess;
+            //   Shuffle(pointsToProcess);
             foreach (Point2D point in pointsToProcess)
             {
                 int x = point.X;
@@ -147,9 +147,10 @@ namespace MonoGame_WaTor
 
             void Process(int x, int y)
             {
-                if (World[x, y] is Entity e)
+                if (World[x, y] is Entity e && (e.UpdateMarkHolder is null || !e.UpdateMarkHolder.MarkValue))
                 {
                     e.Update(myRandom);
+                    e.UpdateMarkHolder = CurrentMarkHolder;
                 }
             }
 

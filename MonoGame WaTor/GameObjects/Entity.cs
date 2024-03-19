@@ -24,6 +24,9 @@ namespace MonoGame_WaTor.GameObjects
         public abstract Texture2D Texture { get; }
 
         private Rectangle drawRectangle;
+
+        public MarkHolder UpdateMarkHolder { get; set; }
+
         public Entity(WaTorGame game, int x, int y)
         {
             drawRectangle = new(x * EntitySize, y * EntitySize, EntitySize, EntitySize);

@@ -41,6 +41,7 @@ namespace MonoGame_WaTor.GameObjects
                 {
                     Fish child = new(Game, movingTo.X, movingTo.Y);
                     child.AddToWorld();
+                    child.UpdateMarkHolder = UpdateMarkHolder;
                     child.breedtime++; // give the child 1 extra tick than normal before it breeds to create a 'desync waterfall' of breed times
                 }
                 else
