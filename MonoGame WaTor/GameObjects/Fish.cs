@@ -9,7 +9,7 @@ namespace MonoGame_WaTor.GameObjects
 {
     public class Fish : Entity
     {
-        public static int BaseBreedTime { get; set; } = 20;
+        public static int BaseBreedTime { get; set; } = 25;
         private int breedtime;
 
         public static Texture2D FishTexture { get; private set; }

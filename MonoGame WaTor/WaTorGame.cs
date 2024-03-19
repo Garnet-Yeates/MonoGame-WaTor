@@ -29,11 +29,10 @@ namespace MonoGame_WaTor
         {
             IsFixedTimeStep = true;
             graphics = new GraphicsDeviceManager(this);
-            TargetElapsedTime = TimeSpan.FromMilliseconds(1000 / 60f); // Run game at 30 FPS
+            TargetElapsedTime = TimeSpan.FromMilliseconds(1000 / 30f); // Run game at 30 FPS
             Content.RootDirectory = "Content";
             IsMouseVisible = true;
         }
-
 
         protected override void Initialize()
         {
@@ -161,16 +160,9 @@ namespace MonoGame_WaTor
         protected override void Draw(GameTime gameTime)
         {
             GraphicsDevice.Clear(Color.Black);
-            if (gameTime.IsRunningSlowly)
-            {
-                Debug.WriteLine("Running slow in draw");
-            }
-
             DrawMT();
-
             base.Draw(gameTime);
         }
-
 
         protected void DrawMT()
         {
