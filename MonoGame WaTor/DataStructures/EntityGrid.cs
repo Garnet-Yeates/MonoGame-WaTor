@@ -20,7 +20,7 @@ namespace MonoGame_WaTor.DataStructures
             Grid = new Entity[NumEntitiesFitX, NumEntitiesFitY];
         }
 
-        public Entity this[in Point2D p]
+        public Entity this[Point2D p]
         {
             get
             {
@@ -49,7 +49,7 @@ namespace MonoGame_WaTor.DataStructures
             return ((a % b) + b) % b;
         }
 
-        public IEnumerable<Point2D> GetAdjacentLocations(in Point2D p)
+        public IEnumerable<Point2D> GetAdjacentLocations(Point2D p)
         {
             return GetAdjacentLocations(p.X, p.Y);
         }
@@ -98,7 +98,7 @@ namespace MonoGame_WaTor.DataStructures
             }
         }
 
-        public IEnumerable<Point2D> GetAdjacentEmptyLocations(in Point2D p)
+        public IEnumerable<Point2D> GetAdjacentEmptyLocations(Point2D p)
         {
             return GetAdjacentEmptyLocations(p.X, p.Y);
         }

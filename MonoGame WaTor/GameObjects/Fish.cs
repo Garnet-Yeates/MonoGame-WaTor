@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using MonoGame_WaTor.DataStructures;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -10,9 +11,6 @@ namespace MonoGame_WaTor.GameObjects
     {
         public static int BaseBreedTime { get; set; } = 20;
         private int breedtime;
-
-        public static byte FishGroupIndex => 1;
-        public override byte GroupIndex => FishGroupIndex;
 
         public static Texture2D FishTexture { get; private set; }
         public override Texture2D Texture => FishTexture;
@@ -25,7 +23,7 @@ namespace MonoGame_WaTor.GameObjects
             breedtime = BaseBreedTime;
         }
 
-        public override void Update()
+        public override void Update(Random r)
         {
             breedtime--;
             bool reproducing = false;
@@ -38,11 +36,11 @@ namespace MonoGame_WaTor.GameObjects
             List<Point2D> nearby = World.GetAdjacentEmptyLocations(X, Y).ToList();
             if (nearby.Any())
             {
-                Point2D movingTo = nearby[WaTorGame.R.Next(nearby.Count)];
+                Point2D movingTo = nearby[r.Next(nearby.Count)];
                 if (reproducing)
                 {
                     Fish child = new(Game, movingTo.X, movingTo.Y);
-                    child.AddToWorld(updateOnCurrentUpdate: false);
+                    child.AddToWorld();
                     child.breedtime++; // give the child 1 extra tick than normal before it breeds to create a 'desync waterfall' of breed times
                 }
                 else

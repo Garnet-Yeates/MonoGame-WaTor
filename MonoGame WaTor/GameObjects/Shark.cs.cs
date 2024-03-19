@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using MonoGame_WaTor.DataStructures;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -15,12 +16,10 @@ namespace MonoGame_WaTor.GameObjects
         public static int BaseEnergy { get; set; } = 5;
         private int energy;
 
-        public static byte SharkGroupIndex => 0;
         public static Texture2D SharkTexture { get; private set; }
 
         public static readonly Color SharkColor = new(0, 125, 255);
 
-        public override byte GroupIndex => SharkGroupIndex;
         public override Color Color => SharkColor;
         public override Texture2D Texture => SharkTexture;
 
@@ -30,7 +29,7 @@ namespace MonoGame_WaTor.GameObjects
             fishTillBreed = BaseFishTillBreed;
         }
 
-        public override void Update()
+        public override void Update(Random r)
         {
             energy--;
 
@@ -49,7 +48,7 @@ namespace MonoGame_WaTor.GameObjects
 
             if (fishSquares.Any())
             {
-                Point2D randomFishSquare = fishSquares[WaTorGame.R.Next(fishSquares.Count)];
+                Point2D randomFishSquare = fishSquares[r.Next(fishSquares.Count)];
                 Entity fishHere = World[randomFishSquare];
                 fishHere.RemoveFromWorld();
 
@@ -60,7 +59,7 @@ namespace MonoGame_WaTor.GameObjects
                 {
                     fishTillBreed = BaseFishTillBreed;
                     Shark child = new(Game, randomFishSquare.X, randomFishSquare.Y);
-                    child.AddToWorld(updateOnCurrentUpdate: false);
+                    child.AddToWorld();
                 }
                 else
                 {
@@ -69,7 +68,7 @@ namespace MonoGame_WaTor.GameObjects
             }
             else if (emptySquares.Any())
             {
-                Move(emptySquares[WaTorGame.R.Next(emptySquares.Count)]);
+                Move(emptySquares[r.Next(emptySquares.Count)]);
             }
 
             if (energy == 0)

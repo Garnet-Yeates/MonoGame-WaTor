@@ -17,11 +17,7 @@ namespace MonoGame_WaTor.GameObjects
         public int X { get; private set; }
         public int Y { get; private set; }
 
-        // Where am I in the Entity update list? Also a reference to my Node for efficient self-removal thru List reference
-        public abstract byte GroupIndex { get; }
-        public PriorityGroupedList<Entity> Entities => Game.Entities;
-        public GroupedListNode<Entity> MyNode { get; private set; }
-        public bool ExistsInWorld => MyNode is not null;
+        public bool ExistsInWorld => World[X, Y] == this;
 
         // For drawing
         public abstract Color Color { get; }
@@ -44,22 +40,21 @@ namespace MonoGame_WaTor.GameObjects
             if (!ExistsInWorld) throw new Exception($"This {GetType().Name} doesn't exist in the world ");
 
             World[X, Y] = null;
-            Entities.Remove(MyNode);
         }
 
-        public void AddToWorld(bool updateOnCurrentUpdate = false)
+        public void AddToWorld()
         {
             if (ExistsInWorld) throw new Exception($"This {GetType().Name} already exists in the world ");
 
             if (World[X, Y] is not null) throw new Exception("Can not add an Entity onto another entity");
 
             World[X, Y] = this;
-            MyNode = updateOnCurrentUpdate ? Entities.AddLast(this, GroupIndex) : Entities.AddFirst(this, GroupIndex);
         }
 
         public void Move(int newX, int newY)
         {
-            if (!ExistsInWorld) throw new Exception("Cannot add an Entity that doesn't exist in the world");
+            Entity here = World[X, Y];
+            if (!ExistsInWorld) throw new Exception("Cannot move an Entity that doesn't exist in the world");
 
             if (World[newX, newY] is not null) throw new Exception("Can not move an Entity onto another entity");
 
@@ -74,6 +69,6 @@ namespace MonoGame_WaTor.GameObjects
             Move(p.X, p.Y);
         }
 
-        public abstract void Update();
+        public abstract void Update(Random r);
     }
 }
