@@ -132,19 +132,24 @@ namespace MonoGame_WaTor
                 int x = point.X;
                 int y = point.Y;
 
+                if (XValuesLockMap.ContainsKey(x))
+                {
+                    lock (XValuesLockMap[x])
+                    {
+                        Process(x, y);
+                    }
+                }
+                else
+                {
+                    Process(x, y);
+                }
+            }
+
+            void Process(int x, int y)
+            {
                 if (World[x, y] is Entity e)
                 {
-                    if (XValuesLockMap.ContainsKey(x))
-                    {
-                        lock (XValuesLockMap[x])
-                        {
-                            e.Update(myRandom);
-                        }
-                    }
-                    else
-                    {
-                        e.Update(myRandom);
-                    }
+                    e.Update(myRandom);
                 }
             }
 
