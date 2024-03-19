@@ -23,8 +23,10 @@ namespace MonoGame_WaTor.GameObjects
         public abstract Color Color { get; }
         public abstract Texture2D Texture { get; }
 
+        private Rectangle drawRectangle;
         public Entity(WaTorGame game, int x, int y)
         {
+            drawRectangle = new(x * EntitySize, y * EntitySize, EntitySize, EntitySize);
             Game = game;
             X = x;
             Y = y;
@@ -32,7 +34,7 @@ namespace MonoGame_WaTor.GameObjects
 
         public virtual void Draw(SpriteBatch spriteBatch)
         {
-            spriteBatch.Draw(Texture, new Rectangle(X * EntitySize, Y * EntitySize, EntitySize, EntitySize), Color);
+            spriteBatch.Draw(Texture, drawRectangle, Color);
         }
 
         public void RemoveFromWorld()
@@ -53,7 +55,6 @@ namespace MonoGame_WaTor.GameObjects
 
         public void Move(int newX, int newY)
         {
-            Entity here = World[X, Y];
             if (!ExistsInWorld) throw new Exception("Cannot move an Entity that doesn't exist in the world");
 
             if (World[newX, newY] is not null) throw new Exception("Can not move an Entity onto another entity");
@@ -62,6 +63,9 @@ namespace MonoGame_WaTor.GameObjects
             X = newX;
             Y = newY;
             World[X, Y] = this;
+
+            drawRectangle.X = X * EntitySize;
+            drawRectangle.Y = Y * EntitySize;
         }
 
         public void Move(Point2D p)
