@@ -8,11 +8,10 @@ namespace MonoGame_WaTor.GameObjects
 {
     public class Fish : Entity
     {
-        public static int BaseBreedTime { get; set; } = 20;
-        private int breedtime;
+        public static int BaseBreedTime { get; set; } = 30;
+        private int breedTime;
 
-        public static byte FishGroupIndex => 1;
-        public override byte GroupIndex => FishGroupIndex;
+        public override byte GroupIndex => 1;
 
         public static Texture2D FishTexture { get; private set; }
         public override Texture2D Texture => FishTexture;
@@ -22,28 +21,21 @@ namespace MonoGame_WaTor.GameObjects
 
         public Fish(WaTorGame game, int x, int y) : base(game, x, y)
         {
-            breedtime = BaseBreedTime;
+            breedTime = BaseBreedTime;
         }
 
         public override void Update()
         {
-            breedtime--;
-            bool reproducing = false;
-            if (breedtime == 0)
+            List<Point2D> nearbyEmpty = World.GetAdjacentEmptyLocations(X, Y).ToList();
+            if (nearbyEmpty.Any())
             {
-                reproducing = true;
-                breedtime = BaseBreedTime;
-            }
-
-            List<Point2D> nearby = World.GetAdjacentEmptyLocations(X, Y).ToList();
-            if (nearby.Any())
-            {
-                Point2D movingTo = nearby[WaTorGame.R.Next(nearby.Count)];
-                if (reproducing)
+                Point2D movingTo = nearbyEmpty[WaTorGame.R.Next(nearbyEmpty.Count)];
+                if (--breedTime == 0)
                 {
+                    breedTime = BaseBreedTime;
                     Fish child = new(Game, movingTo.X, movingTo.Y);
                     child.AddToWorld(updateOnCurrentUpdate: false);
-                    child.breedtime++; // give the child 1 extra tick than normal before it breeds to create a 'desync waterfall' of breed times
+                    child.breedTime++; // give the child 1 extra tick than normal before it breeds to create a 'desync waterfall' of breed times
                 }
                 else
                 {

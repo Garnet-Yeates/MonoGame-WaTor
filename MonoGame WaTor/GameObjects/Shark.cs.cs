@@ -15,13 +15,12 @@ namespace MonoGame_WaTor.GameObjects
         public static int BaseEnergy { get; set; } = 5;
         private int energy;
 
-        public static byte SharkGroupIndex => 0;
-        public static Texture2D SharkTexture { get; private set; }
-
         public static readonly Color SharkColor = new(0, 125, 255);
-
-        public override byte GroupIndex => SharkGroupIndex;
         public override Color Color => SharkColor;
+
+        public override byte GroupIndex => 0;
+
+        public static Texture2D SharkTexture { get; private set; }
         public override Texture2D Texture => SharkTexture;
 
         public Shark(WaTorGame game, int x, int y) : base(game, x, y)
@@ -77,6 +76,7 @@ namespace MonoGame_WaTor.GameObjects
                 RemoveFromWorld();
             }
         }
+
         public static void LoadStaticContent(GraphicsDevice graphics)
         {
             SharkTexture = new Texture2D(graphics, width: 1, height: 1);
