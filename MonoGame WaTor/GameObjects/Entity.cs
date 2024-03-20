@@ -11,19 +11,52 @@ namespace MonoGame_WaTor.GameObjects
 
         public WaTorGame Game { get; }
 
-        // Where am I in the world? Also a reference to the world itself for encapsulated movement
+        /// <summary>
+        /// A reference to the EntityGrid or "world" that we use to encapsulated self-movement
+        /// </summary>
         public EntityGrid World => Game.World;
+
+        /// <summary>
+        /// My X position in the EntityGrid
+        /// </summary>
         public int X { get; private set; }
+
+        /// <summary>
+        /// My Y position in the EntityGrid
+        /// </summary>
         public int Y { get; private set; }
 
-        // Where am I in the Entity update list? Also a reference to my Node for efficient self-removal thru List reference
+        /// <summary>
+        /// What priority am I in the PriorityGroupedList? Lower numbers are evaluated first. Subclasses
+        /// should implement this to determine their order of updating. For example Sharks have 0 and fish have 1
+        /// which means that every frame in the update loop, the Sharks perform their updates first
+        /// </summary>
         public abstract byte GroupIndex { get; }
-        public PriorityGroupedList<Entity> Entities => Game.Entities;
-        public GroupedListNode<Entity> MyNode { get; private set; }
-        public bool ExistsInWorld => MyNode is not null;
 
-        // For drawing
+        /// <summary>
+        /// A reference to my GroupedListNode in the PriorityGroupedList. Using this node reference in tandem with 
+        /// a reference to the list itself allows for efficient O(1) self-removal of this entity from the update list.
+        /// </summary>
+        public GroupedListNode<Entity> MyNode { get; private set; }
+
+        /// <summary>
+        /// A reference to the entity update list, which is iterated through every frame to call Update() on all entities.
+        /// When this Entity is added to the world it is added to this list and gains a reference to its node. When an entity
+        /// is removed from the world it is removed from this list via the same node reference.
+        /// </summary>
+        public PriorityGroupedList<Entity> Entities => Game.Entities;
+
+        /// <summary>
+        /// The Color of this entity. This should usually match the color used in the data array for the texture of
+        /// this entity. Child classes must implement this so this parent class knows what color to draw the entity as.
+        /// </summary>
         public abstract Color Color { get; }
+
+        /// <summary>
+        /// The texture for this entity. Child classes must implement this so we can draw the entity up here in the
+        /// parent class. The texture should be computed statically and the property here should return its reference
+        /// so there is as little overhead as possible.
+        /// </summary>
         public abstract Texture2D Texture { get; }
 
         public Entity(WaTorGame game, int x, int y)

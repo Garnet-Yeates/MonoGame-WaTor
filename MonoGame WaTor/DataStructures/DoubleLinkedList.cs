@@ -23,17 +23,12 @@ namespace MonoGame_WaTor.DataStructures
     /// - Iterating through all elements<br/>
     /// - Self removal of a <see cref="DoubleLinkedNode{T}"/> through a reference to that Node<br/>
     /// - Clearing all elements from the list<br/><br/>
-    /// There is no built in way to access/insert/remove an element by index. Elements also cannot be removed by value, only by reference to their <see cref="DoubleLinkedNode{T}"/>. The reason is because this
+    /// There is no built in way to access/insert/remove an element by index. Elements also cannot be removed by value, only by reference to their <see cref="DoubleLinkedNode{T}"/>. Not only this,
+    /// but there is no validation to make sure that a Node removed through its reference is even a part of this List. The reason is because this
     /// Data Structure was designed to only have O(1) methods inside of it. In our WaTor simulation, this data structure (used in tandem with <see cref="PriorityGroupedList{T}"/>) 
     /// is used to efficiently contain each living <see cref="Entity"/>. Every frame, this List will be iterated through to call the Update() methods on all entities. Every 
     /// Entity has a reference to their ListNode and this List itself, so when they die they can call List.Remove(theirListNode). With this setup, adding and removing entities
     /// stays at O(1) efficiency so we have less overhead.<br/><br/>
-    /// Two more benefits of using a List that is separate from the EntityInterceptionGrid for updating entities:<br/>
-    /// - Instead of doing MaxEntityCount*2 iterations, we only have to do ActualEntityCount*1 iterations. If updating via grid loop, on top of having to do iterations for blank 
-    /// spaces, we would also have to do one initial sweep where when we process an Entity we set a flag called "AlreadyUpdatedThisLoop" so that if it moves into a spot that we 
-    /// have yet to process (i.e to the right, or down) it doesn't get processed twice. Then we would have to do a second sweep to clear the flags.<br/>
-    /// - By using <see cref="PriorityGroupedList{T}"/> along with this setup, we get to put different types of entities into different
-    /// group orderings so that we can process them with a specific order in mind (e.g putting shark list at group 0 so they get to make their moves before the fish).
     /// </summary>
     public class DoubleLinkedList<T> : IEnumerable<T>
     {
@@ -57,6 +52,7 @@ namespace MonoGame_WaTor.DataStructures
                 tail = n;
             }
             else
+
             {
                 n.next = head;
                 head.prev = n;

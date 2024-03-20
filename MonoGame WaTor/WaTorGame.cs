@@ -129,7 +129,7 @@ namespace MonoGame_WaTor
 
         private (int, int) CalculateScreenSizeAndEntityCount()
         {
-            float availableWidth = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Width * 0.85f;
+            float availableWidth = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Width * 0.9f;
             float availableHeight = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Height * 0.9f;
 
             // Find out how many entities can fit within available width and height, rounding down to prevent overfitting
