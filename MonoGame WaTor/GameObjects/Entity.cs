@@ -9,6 +9,10 @@ namespace MonoGame_WaTor.GameObjects
         // Size in pixels of how big Entities are. Entities are represented as colored squares
         public const int EntitySize = 3;
 
+        /// <summary>
+        /// A reference to the Game instance. This reference is used by other properties here to get
+        /// references such as Game.World and Game.EntityList
+        /// </summary>
         public WaTorGame Game { get; }
 
         /// <summary>

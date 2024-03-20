@@ -4,18 +4,6 @@ using System.Collections.Generic;
 
 namespace MonoGame_WaTor.DataStructures
 {
-    public class DoubleLinkedNode<T>
-    {
-        public T value;
-        public DoubleLinkedNode<T> prev;
-        public DoubleLinkedNode<T> next;
-
-        public DoubleLinkedNode(T e)
-        {
-            value = e;
-        }
-    }
-
     /// <summary>
     /// Represents a Double Linked List data structure that only allows:<br/>
     /// - Adding before the head<br/>
@@ -130,6 +118,18 @@ namespace MonoGame_WaTor.DataStructures
         IEnumerator IEnumerable.GetEnumerator()
         {
             return GetEnumerator();
+        }
+    }
+
+    public class DoubleLinkedNode<T>
+    {
+        public T value;
+        public DoubleLinkedNode<T> prev;
+        public DoubleLinkedNode<T> next;
+
+        public DoubleLinkedNode(T e)
+        {
+            value = e;
         }
     }
 }

@@ -4,16 +4,13 @@ using System.Collections.Generic;
 
 namespace MonoGame_WaTor.DataStructures
 {
-    public class GroupedListNode<T> : DoubleLinkedNode<T>
-    {
-        public readonly byte GroupIndex;
-
-        public GroupedListNode(T e, byte group) : base(e)
-        {
-            GroupIndex = group;
-        }
-    }
-
+    /// <summary>
+    /// Represents an amalgamation of DoubleLinkedLists, indexed by priority. Each DoubleLinkedList within the GroupedList
+    /// has a "GroupIndex", and lower indeces are hit first by the Enumerator of this list. When adding an element to this list, you
+    /// must specify a groupIndex that the element will be added to. We use the PriorityGroupedList in this application so that
+    /// certain entities have a higher priority (lower index) and thus are evaluated first by the game update loop. For example,
+    /// Sharks have a GroupIndex of 0 meaning that they are iterated over first so Sharks will always make their move before fish do.
+    /// </summary>
     public class PriorityGroupedList<T> : IEnumerable<T>
     {
         private DoubleLinkedList<T>[] listGroups;
@@ -106,6 +103,16 @@ namespace MonoGame_WaTor.DataStructures
         IEnumerator IEnumerable.GetEnumerator()
         {
             return GetEnumerator();
+        }
+    }
+
+    public class GroupedListNode<T> : DoubleLinkedNode<T>
+    {
+        public readonly byte GroupIndex;
+
+        public GroupedListNode(T e, byte group) : base(e)
+        {
+            GroupIndex = group;
         }
     }
 }
