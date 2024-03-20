@@ -1,14 +1,13 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using MonoGame_WaTor.DataStructures;
-using System;
 
 namespace MonoGame_WaTor.GameObjects
 {
     public abstract class Entity
     {
         // Size in pixels of how big Entities are. Entities are represented as colored squares
-        public const int EntitySize = 2;
+        public const int EntitySize = 3;
 
         public WaTorGame Game { get; }
 
@@ -41,28 +40,18 @@ namespace MonoGame_WaTor.GameObjects
 
         public void RemoveFromWorld()
         {
-            if (!ExistsInWorld) throw new Exception($"This {GetType().Name} doesn't exist in the world ");
-
             World[X, Y] = null;
             Entities.Remove(MyNode);
         }
 
         public void AddToWorld(bool updateOnCurrentUpdate = false)
         {
-            if (ExistsInWorld) throw new Exception($"This {GetType().Name} already exists in the world ");
-
-            if (World[X, Y] is not null) throw new Exception("Can not add an Entity onto another entity");
-
             World[X, Y] = this;
             MyNode = updateOnCurrentUpdate ? Entities.AddLast(this, GroupIndex) : Entities.AddFirst(this, GroupIndex);
         }
 
         public void Move(int newX, int newY)
         {
-            if (!ExistsInWorld) throw new Exception("Cannot add an Entity that doesn't exist in the world");
-
-            if (World[newX, newY] is not null) throw new Exception("Can not move an Entity onto another entity");
-
             World[X, Y] = null;
             X = newX;
             Y = newY;
