@@ -55,7 +55,7 @@ namespace MonoGame_WaTor
             }
         }
 
-        public const int NumIntervals = 4;
+        public const int NumIntervals = 20;
         public WorkInterval[] WorkIntervals { get; private set; }
         public Dictionary<int, LockObject> XValuesLockMap { get; private set; }
         public SpriteBatch[] SpriteBatches { get; private set; }

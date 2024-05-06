@@ -59,7 +59,7 @@ namespace MonoGame_WaTor.GameObjects
                 {
                     fishTillBreed = BaseFishTillBreed;
                     Shark child = new(Game, randomFishSquare.X, randomFishSquare.Y);
-                    child.UpdateMarkHolder = UpdateMarkHolder;
+                    child.IsUpdatedBoolHolder = IsUpdatedBoolHolder;
                     child.AddToWorld();
                 }
                 else

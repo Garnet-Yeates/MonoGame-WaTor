@@ -8,7 +8,7 @@ namespace MonoGame_WaTor.GameObjects
     public abstract class Entity
     {
         // Size in pixels of how big Entities are. Entities are represented as colored squares
-        public const int EntitySize = 2;
+        public const int EntitySize = 1;
 
         public WaTorGame Game { get; }
 
@@ -25,7 +25,7 @@ namespace MonoGame_WaTor.GameObjects
 
         private Rectangle drawRectangle;
 
-        public MarkHolder UpdateMarkHolder { get; set; }
+        public BoolHolder IsUpdatedBoolHolder { get; set; }
 
         public Entity(WaTorGame game, int x, int y)
         {
@@ -42,25 +42,25 @@ namespace MonoGame_WaTor.GameObjects
 
         public void RemoveFromWorld()
         {
-            if (!ExistsInWorld) throw new Exception($"This {GetType().Name} doesn't exist in the world ");
+            //        if (!ExistsInWorld) throw new Exception($"This {GetType().Name} doesn't exist in the world ");
 
             World[X, Y] = null;
         }
 
         public void AddToWorld()
         {
-            if (ExistsInWorld) throw new Exception($"This {GetType().Name} already exists in the world ");
+            //      if (ExistsInWorld) throw new Exception($"This {GetType().Name} already exists in the world ");
 
-            if (World[X, Y] is not null) throw new Exception("Can not add an Entity onto another entity");
+            //      if (World[X, Y] is not null) throw new Exception("Can not add an Entity onto another entity");
 
             World[X, Y] = this;
         }
 
         public void Move(int newX, int newY)
         {
-            if (!ExistsInWorld) throw new Exception("Cannot move an Entity that doesn't exist in the world");
+            //   if (!ExistsInWorld) throw new Exception("Cannot move an Entity that doesn't exist in the world");
 
-            if (World[newX, newY] is not null) throw new Exception("Can not move an Entity onto another entity");
+            //    if (World[newX, newY] is not null) throw new Exception("Can not move an Entity onto another entity");
 
             World[X, Y] = null;
             X = newX;

@@ -11,11 +11,6 @@ using static MonoGame_WaTor.GameObjects.Entity;
 
 namespace MonoGame_WaTor
 {
-    public class MarkHolder
-    {
-        public bool MarkValue { get; set; } = true;
-    }
-
     public partial class WaTorGame : Game
     {
         private static readonly Random R = new();
@@ -27,9 +22,9 @@ namespace MonoGame_WaTor
 
         public WaTorGame()
         {
-            IsFixedTimeStep = true;
+            IsFixedTimeStep = false;
             graphics = new GraphicsDeviceManager(this);
-            TargetElapsedTime = TimeSpan.FromMilliseconds(1000 / 30f); // Run game at 30 FPS
+            TargetElapsedTime = TimeSpan.FromMilliseconds(1000 / 20f); // Run game at 30 FPS
             Content.RootDirectory = "Content";
             IsMouseVisible = true;
         }
@@ -99,23 +94,18 @@ namespace MonoGame_WaTor
 
             if (isRunningEntityUpdates)
             {
-                UpdateMT();
+                CurrentIsUpdatedReference.Value = false;
+                CurrentIsUpdatedReference = new(true);
+
+                for (int i = 0; i < NumIntervals; i++) UpdateResetEvents[i] = new ManualResetEvent(false);
+                for (int i = 0; i < NumIntervals; i++) ThreadPool.QueueUserWorkItem(new WaitCallback(DoUpdateWork), i);
+                WaitHandle.WaitAll(UpdateResetEvents);
             }
 
             base.Update(gameTime);
         }
 
-        private void UpdateMT()
-        {
-            CurrentMarkHolder.MarkValue = false;
-            CurrentMarkHolder = new();
-
-            for (int i = 0; i < NumIntervals; i++) UpdateResetEvents[i] = new ManualResetEvent(false);
-            for (int i = 0; i < NumIntervals; i++) ThreadPool.QueueUserWorkItem(new WaitCallback(DoUpdateWork), i);
-            WaitHandle.WaitAll(UpdateResetEvents);
-        }
-
-        public MarkHolder CurrentMarkHolder { get; set; } = new();
+        public BoolHolder CurrentIsUpdatedReference { get; set; } = new(true);
 
         private void DoUpdateWork(object state)
         {
@@ -146,10 +136,10 @@ namespace MonoGame_WaTor
 
             void Process(int x, int y)
             {
-                if (World[x, y] is Entity e && (e.UpdateMarkHolder is null || !e.UpdateMarkHolder.MarkValue))
+                if (World[x, y] is Entity e && (!e.IsUpdatedBoolHolder?.Value ?? true))
                 {
+                    e.IsUpdatedBoolHolder = CurrentIsUpdatedReference;
                     e.Update(myRandom);
-                    e.UpdateMarkHolder = CurrentMarkHolder;
                 }
             }
 
@@ -160,38 +150,14 @@ namespace MonoGame_WaTor
         protected override void Draw(GameTime gameTime)
         {
             GraphicsDevice.Clear(Color.Black);
-            DrawMT();
-            base.Draw(gameTime);
-        }
 
-        protected void DrawMT()
-        {
-            // Re allocate the draw reset events
-            for (int i = 0; i < NumIntervals; i++)
-            {
-                DrawResetEvents[i] = new ManualResetEvent(false);
-            }
-
-            // Begin all batches
-            foreach (var batch in SpriteBatches)
-            {
-                batch.Begin();
-            }
-
-            // Call DoDrawWork from multiple threads
-            for (int i = 0; i < NumIntervals; i++)
-            {
-                ThreadPool.QueueUserWorkItem(new WaitCallback(DoDrawWork), i);
-            }
-
-            // Wait for all work to finish
+            for (int i = 0; i < NumIntervals; i++) DrawResetEvents[i] = new ManualResetEvent(false);
+            foreach (var batch in SpriteBatches) batch.Begin();
+            for (int i = 0; i < NumIntervals; i++) ThreadPool.QueueUserWorkItem(new WaitCallback(DoDrawWork), i);
             WaitHandle.WaitAll(DrawResetEvents);
+            foreach (var batch in SpriteBatches) batch.End();
 
-            // End all batches
-            foreach (var batch in SpriteBatches)
-            {
-                batch.End();
-            }
+            base.Draw(gameTime);
         }
 
         private void DoDrawWork(object state)
@@ -254,6 +220,16 @@ namespace MonoGame_WaTor
         {
             Fish.UnloadStaticContent();
             Shark.UnloadStaticContent();
+        }
+    }
+
+    public class BoolHolder
+    {
+        public bool Value { get; set; }
+
+        public BoolHolder(bool initialValue)
+        {
+            Value = initialValue;
         }
     }
 }
