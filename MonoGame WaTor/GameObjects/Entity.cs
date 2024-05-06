@@ -21,12 +21,12 @@ namespace MonoGame_WaTor.GameObjects
         public EntityGrid World => Game.World;
 
         /// <summary>
-        /// My X position in the EntityGrid
+        /// My X position in the EntityGrid. This must be updated as we move the entity through the grid
         /// </summary>
         public int X { get; private set; }
 
         /// <summary>
-        /// My Y position in the EntityGrid
+        /// My Y position in the EntityGrid. This must be updated as we move the entity through the grid
         /// </summary>
         public int Y { get; private set; }
 

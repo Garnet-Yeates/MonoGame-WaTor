@@ -8,7 +8,7 @@ namespace MonoGame_WaTor.GameObjects
 {
     public class Fish : Entity
     {
-        public static int BaseBreedTime { get; set; } = 30;
+        public static int BaseBreedTime { get; set; } = 45;
         private int breedTime;
 
         public override byte GroupIndex => 1;
@@ -35,7 +35,7 @@ namespace MonoGame_WaTor.GameObjects
                     breedTime = BaseBreedTime;
                     Fish child = new(Game, movingTo.X, movingTo.Y);
                     child.AddToWorld(updateOnCurrentUpdate: false);
-                    child.breedTime++; // give the child 1 extra tick than normal before it breeds to create a 'desync waterfall' of breed times
+                    child.breedTime += 5; // give the child 1 extra tick than normal before it breeds to create a 'desync waterfall' of breed times
                 }
                 else
                 {

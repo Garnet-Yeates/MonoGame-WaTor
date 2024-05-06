@@ -11,8 +11,8 @@ namespace MonoGame_WaTor.GameObjects
         public static int BaseFishTillBreed { get; set; } = 2;
         private int fishTillBreed;
 
-        public static int EnergyGainedFromEatingFish { get; set; } = 5;
-        public static int BaseEnergy { get; set; } = 5;
+        public static int EnergyGainedFromEatingFish { get; set; } = 7;
+        public static int BaseEnergy { get; set; } = 7;
         private int energy;
 
         public static readonly Color SharkColor = new(0, 125, 255);
